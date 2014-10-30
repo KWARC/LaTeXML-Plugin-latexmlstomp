@@ -14,7 +14,7 @@ WriteMakefile(
   VERSION_FROM => 'bin/latexmlstomp',
   PREREQ_PM => {
     'LaTeXML' => '0.7.99',
-    'Net::Stomp' => '0'
+    'Net::Stomp' => '0.49'
   },
   EXE_FILES => ['bin/latexmlstomp'],
   test => {TESTS => 't/*.t'},
