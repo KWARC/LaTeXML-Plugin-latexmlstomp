@@ -79,7 +79,14 @@ while (1) {
 
   # Thaw request into options:
   my $opts = LaTeXML::Common::Config->new();
-  $opts->read_keyvals([map { uri_unescape($_) } map { split('=', $_) } split('&', $request_content)]);
+  my $config_build_return = eval {
+      $opts->read_keyvals([map { uri_unescape($_) } map { split('=', $_) } split('&', $request_content)], silent=>1); };
+  if (!$config_build_return || $@) {
+    # Wrong options, report error.
+    # Keeping it simple here, note that this report has diverged from latexmls
+    send_response(encode_json({status=> 4, log => "Bad Request"}));
+    next;
+  }
   # Local if peerhost is localhost:
   $opts->set('local', 1 == 1); # Always local?
   $opts->set('source', $opts->get('tex')) if (!($opts->get('source')) && $opts->get('tex'));
