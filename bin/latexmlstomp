@@ -51,7 +51,7 @@ $g_opts->read(\@ARGV);
 my $server = setup_server($g_opts->get('port'));
 #**********************************************************************
 # Daemonize
-daemonize();
+# daemonize();
 
 #**********************************************************************
 # Set up the processing.
