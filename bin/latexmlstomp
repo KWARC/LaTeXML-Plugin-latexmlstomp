@@ -44,11 +44,11 @@ use LaTeXML::Util::Pathname;
 # Bookkeeping
 my $ARGV_SAVED = [@ARGV],    #Save, so that we reinvoke when flushed
   # Read default options
-  my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600, 'port' => "61613", 'user' => "karaf", 'password' => "karaf");
+  my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600, 'port' => "61613", 'user' => "karaf", 'password' => "karaf", "queue" => "latexml");
 $g_opts->read(\@ARGV);
 
 # Set up the server
-my $server = setup_server($g_opts->get('port'));
+my $server = setup_server($g_opts->get('port'), $g_opts->get('user'), $g_opts->get('password'), $g_opts->get('queue'));
 #**********************************************************************
 # Daemonize
 # daemonize();
@@ -175,12 +175,12 @@ sub daemonize {
 }
 
 sub setup_server {
-  my ($localport) = @_;
+  my ($localport, $login, $password, $queue) = @_;
   my $stomp = Net::Stomp->new( { hostname => 'localhost', port => $localport } );
-  $stomp->connect( { login => 'webclient', passcode => 'webclient' } );
+  $stomp->connect( { login => $login, passcode => $password } );
   
   $stomp->subscribe(
-      {   destination             => '/queue/latexml',
+      {   destination             => '/queue/'.$queue,
           'ack'                   => 'client',
           'activemq.prefetchSize' => 1
       }
