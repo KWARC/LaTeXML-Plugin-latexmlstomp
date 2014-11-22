@@ -19,11 +19,13 @@ eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
 use strict;
 use warnings;
 use FindBin;
+use Getopt::Long  qw(:config pass_through);
 
 our $VERSION = '1.0';
 
 my $RealBin_safe;
 BEGIN {
+  $| = 1;
   $FindBin::RealBin =~ /^([^\0]+)\z/;    # Valid Unix path TODO: Windows, revisit regexp
   $RealBin_safe = $1;
   die 'Fatal:IO:tainted RealBin was tainted! Failing...' unless ($RealBin_safe && (-e $RealBin_safe . '/latexmlstomp'));
@@ -41,14 +43,24 @@ use LaTeXML::Common::Config;
 use LaTeXML::Util::Pathname;
 #**********************************************************************
 
+my $port = 61613;
+my $user = "karaf";
+my $password = "karaf";
+my $queue = "latexml";
+
+GetOptions ('port=i' => \$port, 'user=s' => \$user, 'password=s' => \$password, "queue=s" => \$queue);
+
+print("queue ".$queue);
+
 # Bookkeeping
-my $ARGV_SAVED = [@ARGV],    #Save, so that we reinvoke when flushed
+my $ARGV_SAVED = [@ARGV];    #Save, so that we reinvoke when flushed
   # Read default options
-  my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600, 'port' => "61613", 'user' => "karaf", 'password' => "karaf", "queue" => "latexml");
+
+my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600);
 $g_opts->read(\@ARGV);
 
 # Set up the server
-my $server = setup_server($g_opts->get('port'), $g_opts->get('user'), $g_opts->get('password'), $g_opts->get('queue'));
+my $server = setup_server($port, $user, $password, $queue);
 #**********************************************************************
 # Daemonize
 # daemonize();
