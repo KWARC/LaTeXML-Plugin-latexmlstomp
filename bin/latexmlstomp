@@ -48,13 +48,11 @@ my $user = "karaf";
 my $password = "karaf";
 my $queue = "latexml";
 
-GetOptions ('port=i' => \$port, 'user=s' => \$user, 'password=s' => \$password, "queue=s" => \$queue);
-
-print("queue ".$queue);
-
 # Bookkeeping
 my $ARGV_SAVED = [@ARGV];    #Save, so that we reinvoke when flushed
   # Read default options
+
+GetOptions ('port=i' => \$port, 'user=s' => \$user, 'password=s' => \$password, "queue=s" => \$queue);
 
 my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600);
 $g_opts->read(\@ARGV);
