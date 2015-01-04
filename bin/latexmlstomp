@@ -54,7 +54,7 @@ my $ARGV_SAVED = [@ARGV];    #Save, so that we reinvoke when flushed
 
 GetOptions ('port=i' => \$port, 'user=s' => \$user, 'password=s' => \$password, "queue=s" => \$queue);
 
-my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600);
+my $g_opts = LaTeXML::Common::Config->new('input_limit' => 100, expire => 600, timeout => 60);
 $g_opts->read(\@ARGV);
 
 # Set up the server
